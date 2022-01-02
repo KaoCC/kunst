@@ -9,8 +9,8 @@ namespace kunst {
 class quadtree final {
  public:
   quadtree(const cv::Mat& input_image);
-  std::vector<cv::Mat> create_images(const size_t steps, const bool is_animated,
-                                     const size_t sample_period) const noexcept;
+  [[nodiscard]] auto create_images(size_t steps, bool is_animated, size_t sample_period) const noexcept
+      -> std::vector<cv::Mat>;
 
  private:
   enum class quadrant : size_t { top_left = 0UL, top_right = 1UL, bottom_left = 2UL, bottom_right = 3UL };
@@ -33,8 +33,8 @@ class quadtree final {
 
   static constexpr auto index(quadrant quad) noexcept { return static_cast<size_t>(quad); }
 
-  std::unique_ptr<node> build_tree(const cv::Mat& input_image, const int start_row_index, int start_col_index,
-                                   const int height, const int width) noexcept;
+  auto build_tree(const cv::Mat& input_image, int start_row_index, int start_col_index, int height, int width) noexcept
+      -> std::unique_ptr<node>;
 
   static void set_image_color(cv::Mat& image, const node& node) noexcept;
 

@@ -13,7 +13,7 @@ auto accumulate(callback&& transform_function, const cv::Mat& input_image, const
   cv::Vec3f sum{};
   for (auto i = start_row_index; i < start_row_index + height; ++i) {
     for (auto j = start_col_index; j < start_col_index + width; ++j) {
-      const auto color{input_image.at<cv::Vec3b>(i, j)};
+      const auto& color{input_image.at<cv::Vec3b>(i, j)};
 
       sum += std::invoke(std::forward<callback>(transform_function), color);
     }
@@ -34,8 +34,8 @@ quadtree::quadtree(const cv::Mat& input_image)
   root = build_tree(input_image, start_row_index, start_col_index, max_height, max_width);
 }
 
-std::unique_ptr<quadtree::node> quadtree::build_tree(const cv::Mat& input_image, const int start_row_index,
-                                                     int start_col_index, const int height, const int width) noexcept {
+auto quadtree::build_tree(const cv::Mat& input_image, const int start_row_index, int start_col_index, const int height,
+                          const int width) noexcept -> std::unique_ptr<quadtree::node> {
   auto current_node{std::make_unique<node>()};
   current_node->start_row_index = start_row_index;
   current_node->start_col_index = start_col_index;
@@ -94,8 +94,8 @@ void quadtree::set_image_color(cv::Mat& image, const node& current_node) noexcep
   }
 }
 
-std::vector<cv::Mat> quadtree::create_images(const size_t steps, const bool is_animated,
-                                             const size_t sample_period) const noexcept {
+auto quadtree::create_images(const size_t steps, const bool is_animated, const size_t sample_period) const noexcept
+    -> std::vector<cv::Mat> {
   cv::Mat output(max_height, max_width, CV_8UC3);
   std::vector<cv::Mat> result;
 
@@ -107,7 +107,7 @@ std::vector<cv::Mat> quadtree::create_images(const size_t steps, const bool is_a
   auto sample{0UL};
 
   while (!std::empty(pqueue) && sample < steps) {
-    const auto current_node{pqueue.top()};
+    auto* const current_node{pqueue.top()};
     pqueue.pop();
 
     set_image_color(output, *current_node);

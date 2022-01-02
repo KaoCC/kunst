@@ -5,12 +5,12 @@
 
 #include "quadtree_transform.hpp"
 
-int main() {
+auto main() -> int {
   constexpr auto test_image{"lenna.png"};
 
   const auto input_image{cv::imread(test_image)};
 
-  if (!input_image.data) {
+  if (input_image.data == nullptr) {
     std::cerr << "No Data. Failed to load the image" << std::endl;
     std::exit(EXIT_FAILURE);
   }
